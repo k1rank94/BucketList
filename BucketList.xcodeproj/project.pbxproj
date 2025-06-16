@@ -75,7 +75,6 @@
 		9F0AB1582DFEC6EE003A8859 = {
 			isa = PBXGroup;
 			children = (
-				9F98C9F52DFFB8B9005204F7 /* Core */,
 				9F0AB1632DFEC6EE003A8859 /* BucketList */,
 				9F0AB1742DFEC6F1003A8859 /* BucketListTests */,
 				9F0AB17E2DFEC6F1003A8859 /* BucketListUITests */,
@@ -91,13 +90,6 @@
 				9F0AB17B2DFEC6F1003A8859 /* BucketListUITests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		9F98C9F52DFFB8B9005204F7 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Core;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
