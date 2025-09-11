@@ -2,7 +2,11 @@
 //  BucketListUITestsLaunchTests.swift
 //  BucketListUITests
 //
+<<<<<<< HEAD
 //  Created by Kiran on 08/07/25.
+=======
+//  Created by Kiran K on 15/06/25.
+>>>>>>> main
 //
 
 import XCTest

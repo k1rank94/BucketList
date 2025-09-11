@@ -11,11 +11,11 @@ struct ExploreView: View {
     @State var exploreViewModel = ExploreViewModel()
     var body: some View {
         NavigationStack {
-            List {
+            VStack(spacing: 32) {
                 categoriesSection
                 goalsSection
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding()
             .navigationTitle("Home")
             .navigationBarHidden(true)
         }
@@ -52,23 +52,38 @@ struct ExploreView: View {
                 }
             }
         }
-        .removeListRowFormatting()
     }
     
     private var goalsSection: some View {
-        Section {
-            VStack(alignment: .leading) {
-                Text("Your goals")
-                    .font(.title)
-                    .fontWeight(.bold)
-                ScrollView(.horizontal) {
-                    HStack {
-                        
+        VStack() {
+            Text("Your goals")
+                .font(.title)
+                .fontWeight(.bold)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            ZStack(alignment: .center) {
+                if exploreViewModel.userBucketListItems.isEmpty {
+                    VStack(spacing: 0) {
+                        Image(.imgOnboardingBoyWithGuitar)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 300, height: 300, alignment: .center)
+                        Text("You have no goals yet")
+                            .font(.callout)
+                            .fontWeight(.semibold)
+                            .offset(y: -16)
+                    }
+                    .offset(y: -30)
+                } else {
+                    ScrollView(.horizontal) {
+                        HStack {
+                            
+                        }
                     }
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .removeListRowFormatting()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

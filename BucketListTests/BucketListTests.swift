@@ -2,8 +2,7 @@
 //  BucketListTests.swift
 //  BucketListTests
 //
-//  Created by Kiran on 08/07/25.
-//
+
 
 import Testing
 @testable import BucketList

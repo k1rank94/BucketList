@@ -10,4 +10,5 @@ import Foundation
 @Observable
 class ExploreViewModel {
     var categories: [Category] = Category.mocks
+    var userBucketListItems: [UserBucketItem] = []
 }
