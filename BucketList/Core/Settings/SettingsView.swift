@@ -9,11 +9,12 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(AppState.self) var appState
+    @State private var isAnonymousUser: Bool = true
     
     var body: some View {
         NavigationStack {
             List {
-                logoutButton
+                accountsSection
             }
             .navigationTitle("Settings")
         }
@@ -30,6 +31,19 @@ struct SettingsView: View {
     
     private func onLogoutButtonTapped() {
         appState.updateLoginStatus(false)
+    }
+    
+    private var accountsSection: some View {
+        Section {
+            if isAnonymousUser {
+                Text("SignIn & save data")
+            } else {
+                Text("Logout")
+            }
+        } header: {
+            Text("Accounts")
+        }
+
     }
     
 }

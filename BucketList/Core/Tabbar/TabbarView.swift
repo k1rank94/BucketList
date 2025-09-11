@@ -12,12 +12,6 @@ struct TabbarView: View {
     var body: some View {
         TabView {
             
-            HomeView()
-                .tabItem {
-                    Image(systemName: "house")
-                    Text("Home")
-                }
-            
             ExploreView()
                 .tabItem {
                     Image(systemName: "magnifyingglass")
@@ -28,12 +22,6 @@ struct TabbarView: View {
                 .tabItem {
                     Image(systemName: "plus")
                     Text("Add Goal")
-                }
-            
-            TrackView()
-                .tabItem {
-                    Image(systemName: "arrow.triangle.2.circlepath")
-                    Text("Track")
                 }
             
             ProfileView()

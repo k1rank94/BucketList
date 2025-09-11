@@ -22,4 +22,10 @@ extension View {
             .background(Color.accentColor)
             .clipShape(RoundedRectangle(cornerRadius: 12))
     }
+    
+    func removeListRowFormatting() -> some View {
+        self
+            .listRowInsets(EdgeInsets())
+            .listRowBackground(Color.clear)
+    }
 }
