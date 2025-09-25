@@ -10,7 +10,7 @@ import AuthenticationServices
 
 struct CreateAccountView: View {
     
-    @Environment(\.authService) private var authService
+    @Environment(AuthManager.self) private var authManager
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -42,12 +42,12 @@ struct CreateAccountView: View {
     private func onSignInWithApplePressed()  {
         Task {
             do {
-                let authInfo = try await authService.signInWithApple()
+                let authInfo = try await authManager.signInWithApple()
             } catch {
                 print("Failed to sign in with error \(error)")
             }
+            dismiss()
         }
-        dismiss()
     }
 }
 

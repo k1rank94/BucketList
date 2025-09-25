@@ -9,7 +9,8 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(AppState.self) var appState
-    @Environment(\.authService) private var authService
+    @Environment(AuthManager.self) private var authManager
+    @Environment(\.dismiss) private var dismiss
     @State private var isAnonymousUser: Bool = true
     @State private var presentCreateAccountView: Bool = false
     
@@ -24,13 +25,13 @@ struct SettingsView: View {
             }
         }
         .sheet(isPresented: $presentCreateAccountView) {
+            print("In closure of create account view")
             checkUserStatus()
         } content: {
             CreateAccountView()
                 .presentationDetents([.medium])
                 .presentationCornerRadius(20)
         }
-
     }
     
     private var logoutButton: some View {
@@ -81,7 +82,7 @@ struct SettingsView: View {
     
     private func checkUserStatus()  {
         Task {
-            if let user = await authService.getCurrentUser() {
+            if let user = authManager.authInfo {
                 isAnonymousUser = user.isAnonymous
             }
         }
@@ -94,7 +95,8 @@ struct SettingsView: View {
     private func onSignOutPressed() {
         Task {
             do {
-                try await authService.signOut()
+                try await authManager.signOut()
+                changeAppState()
             } catch {
                 print("Failed to signout with error: %@", error.localizedDescription)
             }
@@ -104,11 +106,17 @@ struct SettingsView: View {
     private func onDeleteAccountPressed() {
         Task {
             do {
-                try await authService.deleteUser()
+                try await authManager.deleteUser()
+                changeAppState()
             } catch {
                 print("Failed to delete account with error: %@", error.localizedDescription)
             }
         }
+    }
+    
+    private func changeAppState() {
+        dismiss()
+        appState.updateLoginStatus(false)
     }
 }
 

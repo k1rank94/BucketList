@@ -12,8 +12,18 @@ struct BucketListApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            EnvironmentBuilder {
+                ContentView()
+            }
         }
+    }
+}
+
+struct EnvironmentBuilder<Content: View>: View {
+    @ViewBuilder var content: () -> Content
+    var body: some View {
+        content()
+            .environment(AuthManager(service: FirebaseAuthService()))
     }
 }
 

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AppView: View {
     @State var appState: AppState = AppState()
-    @Environment(\.authService) private var authService
+    @Environment(AuthManager.self) private var authManager
     
     var body: some View {
         
@@ -29,15 +29,21 @@ struct AppView: View {
         .onAppear {
             checkUserStatus()
         }
+        .onChange(of: appState.isUserLoggedIn) { oldValue, newValue in
+            if !newValue {
+                checkUserStatus()
+            }
+        }
     }
     
     private func checkUserStatus()  {
         Task {
-            if let userAuthInfo = await authService.getCurrentUser() {
+            if let userAuthInfo = await authManager.authInfo {
                 print("Signed in with existing anonymous user", userAuthInfo.uid)
             } else {
                 do {
-                     let userAuthInfo = try await authService.signInAnonymously()
+                     let userAuthInfo = try await authManager.signInAnonymously()
+                    print("Anonymous user signed in successfully with uid - \(String(describing: userAuthInfo?.uid))")
                 } catch {
                     print("Failed to sign in user anonymously with error - \(error)")
                 }
@@ -46,9 +52,6 @@ struct AppView: View {
     }
 }
 
-extension EnvironmentValues {
-    @Entry var authService = FirebaseAuthService()
-}
 
 #Preview {
     AppView()
