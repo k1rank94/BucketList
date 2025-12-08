@@ -11,6 +11,7 @@ import AuthenticationServices
 struct CreateAccountView: View {
     
     @Environment(AuthManager.self) private var authManager
+    @Environment(UserManager.self) private var userManager
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -42,11 +43,21 @@ struct CreateAccountView: View {
     private func onSignInWithApplePressed()  {
         Task {
             do {
-                let authInfo = try await authManager.signInWithApple()
+                let result = try await authManager.signInWithApple()
+                saveUser(with: result.authInfo, isNewUser: result.isNewUser)
+                
             } catch {
                 print("Failed to sign in with error \(error)")
             }
             dismiss()
+        }
+    }
+    
+    private func saveUser(with authInfo: UserAuthInfo, isNewUser: Bool) {
+        do {
+            try userManager.saveUser(authInfo: authInfo, isNewUser: isNewUser)
+        } catch {
+            print("Failed to save user with error - \(error)")
         }
     }
 }

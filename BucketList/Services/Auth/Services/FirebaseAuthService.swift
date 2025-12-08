@@ -31,13 +31,13 @@ struct FirebaseAuthService: AuthService {
         return UserAuthInfo(user: user)
     }
     
-    func signInAnonymously() async throws -> UserAuthInfo? {
+    func signInAnonymously() async throws -> (authInfo: UserAuthInfo, isNewUser: Bool) {
         let authDataResult = try await Auth.auth().signInAnonymously()
-        let result = authDataResult.user
-        return UserAuthInfo(user: result)
+        let result = authDataResult.asAuthinfo
+        return result
     }
     
-    func signInWithApple() async throws -> UserAuthInfo? {
+    func signInWithApple() async throws -> (authInfo: UserAuthInfo, isNewUser: Bool) {
         let helper = await SignInWithAppleHelper()
 
         let response = try await helper.signIn()
@@ -48,19 +48,21 @@ struct FirebaseAuthService: AuthService {
             rawNonce: response.nonce
         )
         
-        do {
-            let result = try await Auth.auth().currentUser?.link(with: credential)
-            return result?.asAuthinfo
-        } catch let error as NSError {
-            let authError = AuthErrorCode(rawValue: error.code)
-            switch authError {
-            case .providerAlreadyLinked, .credentialAlreadyInUse:
-                if let existingCredential = error.userInfo["FIRAuthErrorUserInfoUpdatedCredentialKey"] as? AuthCredential {
-                    let result = try await Auth.auth().signIn(with: existingCredential)
-                    return result.asAuthinfo
+        if let user = Auth.auth().currentUser, user.isAnonymous {
+            do {
+                let result = try await user.link(with: credential)
+                return result.asAuthinfo
+            } catch let error as NSError {
+                let authError = AuthErrorCode(rawValue: error.code)
+                switch authError {
+                case .providerAlreadyLinked, .credentialAlreadyInUse:
+                    if let existingCredential = error.userInfo["FIRAuthErrorUserInfoUpdatedCredentialKey"] as? AuthCredential {
+                        let result = try await Auth.auth().signIn(with: existingCredential)
+                        return result.asAuthinfo
+                    }
+                default:
+                    break
                 }
-            default:
-                break
             }
         }
         
@@ -80,8 +82,9 @@ struct FirebaseAuthService: AuthService {
 }
 
 extension AuthDataResult {
-    var asAuthinfo: UserAuthInfo? {
+    var asAuthinfo: (UserAuthInfo, Bool) {
         let authInfo = UserAuthInfo(user: user)
-        return authInfo
+        let isNewUser = additionalUserInfo?.isNewUser ?? true
+        return (authInfo, isNewUser)
     }
 }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9F0CE36A2EE6A50A00955FD1 /* SwiftfulUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = 9F0CE3692EE6A50A00955FD1 /* SwiftfulUtilities */; };
+		9F0CE4412EE6FAC300955FD1 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 9F0CE4402EE6FAC300955FD1 /* FirebaseFirestore */; };
 		9FD2D8A82E1F909E00E86657 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 9FD2D8A72E1F909E00E86657 /* SDWebImageSwiftUI */; };
 		9FFD9F762E77D808006877A0 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 9FFD9F752E77D808006877A0 /* FirebaseAuth */; };
 		9FFD9F852E77FFEC006877A0 /* SignInAppleAsync in Frameworks */ = {isa = PBXBuildFile; productRef = 9FFD9F842E77FFEC006877A0 /* SignInAppleAsync */; };
@@ -72,7 +74,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				9FD2D8A82E1F909E00E86657 /* SDWebImageSwiftUI in Frameworks */,
+				9F0CE36A2EE6A50A00955FD1 /* SwiftfulUtilities in Frameworks */,
 				9FFD9F762E77D808006877A0 /* FirebaseAuth in Frameworks */,
+				9F0CE4412EE6FAC300955FD1 /* FirebaseFirestore in Frameworks */,
 				9FFD9F852E77FFEC006877A0 /* SignInAppleAsync in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -94,12 +98,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9F0CE43F2EE6FAC300955FD1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		9FD2D7382E1D1B2F00E86657 = {
 			isa = PBXGroup;
 			children = (
 				9FD2D7432E1D1B2F00E86657 /* BucketList */,
 				9FD2D7542E1D1B3100E86657 /* BucketListTests */,
 				9FD2D75E2E1D1B3100E86657 /* BucketListUITests */,
+				9F0CE43F2EE6FAC300955FD1 /* Frameworks */,
 				9FD2D7422E1D1B2F00E86657 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -137,6 +149,8 @@
 				9FD2D8A72E1F909E00E86657 /* SDWebImageSwiftUI */,
 				9FFD9F752E77D808006877A0 /* FirebaseAuth */,
 				9FFD9F842E77FFEC006877A0 /* SignInAppleAsync */,
+				9F0CE3692EE6A50A00955FD1 /* SwiftfulUtilities */,
+				9F0CE4402EE6FAC300955FD1 /* FirebaseFirestore */,
 			);
 			productName = BucketList;
 			productReference = 9FD2D7412E1D1B2F00E86657 /* BucketList.app */;
@@ -224,6 +238,7 @@
 				9FD2D8A62E1F909E00E86657 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				9FFD9F742E77D808006877A0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				9FFD9F832E77FFEC006877A0 /* XCRemoteSwiftPackageReference "SignInAppleAsync" */,
+				9F0CE3682EE6A50A00955FD1 /* XCRemoteSwiftPackageReference "SwiftfulUtilities" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9FD2D7422E1D1B2F00E86657 /* Products */;
@@ -602,6 +617,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		9F0CE3682EE6A50A00955FD1 /* XCRemoteSwiftPackageReference "SwiftfulUtilities" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftfulThinking/SwiftfulUtilities.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.6;
+			};
+		};
 		9FD2D8A62E1F909E00E86657 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
@@ -629,6 +652,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		9F0CE3692EE6A50A00955FD1 /* SwiftfulUtilities */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9F0CE3682EE6A50A00955FD1 /* XCRemoteSwiftPackageReference "SwiftfulUtilities" */;
+			productName = SwiftfulUtilities;
+		};
+		9F0CE4402EE6FAC300955FD1 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9FFD9F742E77D808006877A0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
 		9FD2D8A72E1F909E00E86657 /* SDWebImageSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 9FD2D8A62E1F909E00E86657 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;

@@ -6,26 +6,32 @@
 //
 
 import SwiftUI
+import SwiftfulUtilities
 
 struct SettingsView: View {
+    // MARK: - Dependencies
     @Environment(AppState.self) var appState
     @Environment(AuthManager.self) private var authManager
     @Environment(\.dismiss) private var dismiss
+    
+    // MARK: - State
     @State private var isAnonymousUser: Bool = true
     @State private var presentCreateAccountView: Bool = false
     
     var body: some View {
         NavigationStack {
             List {
-                accountsSection
+                accountSection
+                aboutSection
             }
+            .listStyle(.insetGrouped)
             .navigationTitle("Settings")
+            .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 checkUserStatus()
             }
         }
         .sheet(isPresented: $presentCreateAccountView) {
-            print("In closure of create account view")
             checkUserStatus()
         } content: {
             CreateAccountView()
@@ -34,57 +40,72 @@ struct SettingsView: View {
         }
     }
     
-    private var logoutButton: some View {
-        Button {
-            onLogoutButtonTapped()
-        } label: {
-            Text("Log out")
-                .foregroundStyle(.red)
-        }
-    }
+    // MARK: - View Components
     
-    private func onLogoutButtonTapped() {
-        appState.updateLoginStatus(false)
-    }
-    
-    private var accountsSection: some View {
+    private var accountSection: some View {
         Section {
             if isAnonymousUser {
                 Button {
                     onSignInButtonPressed()
                 } label: {
-                    Text("Sign In & save data")
-                        .font(.body)
-                        .foregroundStyle(.black)
+                    SettingsListRow(
+                        icon: "person.crop.circle.badge.plus",
+                        title: "Sign In & Save Data",
+                        actionType: .primary
+                    )
                 }
-
+                .accessibilityLabel("Sign in and save data")
+                .accessibilityHint("Opens the account creation screen")
             } else {
                 Button {
                     onSignOutPressed()
                 } label: {
-                    Text("Logout")
-                        .font(.body)
-                        .foregroundStyle(.red)
+                    SettingsListRow(
+                        icon: "rectangle.portrait.and.arrow.right",
+                        title: "Log out",
+                        actionType: .destructive
+                    )
                 }
+                .accessibilityLabel("Log out")
                 
                 Button {
                     onDeleteAccountPressed()
                 } label: {
-                    Text("Delete account")
-                        .font(.body)
-                        .foregroundStyle(.red)
+                    SettingsListRow(
+                        icon: "trash",
+                        title: "Delete account",
+                        actionType: .destructive
+                    )
                 }
+                .accessibilityLabel("Delete account")
+                .accessibilityHint("Permanently deletes your account and data")
             }
         } header: {
-            Text("Accounts")
+            Text("Account")
         }
     }
     
-    private func checkUserStatus()  {
-        Task {
-            if let user = authManager.authInfo {
-                isAnonymousUser = user.isAnonymous
+    private var aboutSection: some View {
+        Section {
+            HStack {
+                Text("Version")
+                    .font(.subheadline) // Set explicitly to match SettingsListRow
+                Spacer()
+                Text(appVersion)
+                    .font(.subheadline) // Set explicitly to match SettingsListRow
+                    .foregroundStyle(.secondary)
             }
+            .accessibilityElement(children: .combine)
+        } header: {
+            Text("About")
+        }
+    }
+    
+    // MARK: - Actions
+    
+    private func checkUserStatus() {
+        if let user = authManager.authInfo {
+            isAnonymousUser = user.isAnonymous
         }
     }
     
@@ -98,7 +119,7 @@ struct SettingsView: View {
                 try await authManager.signOut()
                 changeAppState()
             } catch {
-                print("Failed to signout with error: %@", error.localizedDescription)
+                print("Logout Error: \(error.localizedDescription)")
             }
         }
     }
@@ -109,7 +130,7 @@ struct SettingsView: View {
                 try await authManager.deleteUser()
                 changeAppState()
             } catch {
-                print("Failed to delete account with error: %@", error.localizedDescription)
+                print("Delete Account Error: \(error.localizedDescription)")
             }
         }
     }
@@ -117,6 +138,15 @@ struct SettingsView: View {
     private func changeAppState() {
         dismiss()
         appState.updateLoginStatus(false)
+    }
+    
+    // MARK: - Helpers
+    
+    private var appVersion: String {
+        guard let version = Utilities.appVersion else {
+            return "N/A"
+        }
+        return "\(version)"
     }
 }
 

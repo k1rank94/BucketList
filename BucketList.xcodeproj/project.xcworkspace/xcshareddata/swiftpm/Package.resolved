@@ -1,5 +1,5 @@
 {
-  "originHash" : "6264f65e9cccb4136030a0446a005f3a94260efc98b70aed4794eda2c6b52acf",
+  "originHash" : "a9b39a0680bd0c835ea2a4ed236d1560f1bfa7641d0c05fb321881c63bcdadbd",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -152,6 +152,15 @@
       "state" : {
         "revision" : "e3f69fd321d0c9fcdc16fb576a0cdd956675face",
         "version" : "1.31.0"
+      }
+    },
+    {
+      "identity" : "swiftfulutilities",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SwiftfulThinking/SwiftfulUtilities.git",
+      "state" : {
+        "revision" : "94c122e1e58cbcbe117200df211cf08ca6f5d6fb",
+        "version" : "1.1.6"
       }
     }
   ],

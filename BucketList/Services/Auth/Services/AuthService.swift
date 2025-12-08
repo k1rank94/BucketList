@@ -9,9 +9,9 @@ import Foundation
 
 protocol AuthService: Sendable {
     func addAuthenticatedStateListener(_ attchListener: (any NSObjectProtocol) -> Void) -> AsyncStream<UserAuthInfo?>
-    func signInAnonymously() async throws -> UserAuthInfo?
+    func signInAnonymously() async throws -> (authInfo: UserAuthInfo, isNewUser: Bool)
     func getCurrentUser() -> UserAuthInfo?
-    func signInWithApple() async throws -> UserAuthInfo?
+    func signInWithApple() async throws -> (authInfo: UserAuthInfo, isNewUser: Bool)
     func signOut() async throws
     func deleteUser() async throws
 }

@@ -15,10 +15,12 @@ struct AppViewBuilder<Welcome: View, Main: View>: View {
     @ViewBuilder let tabbarView: () -> Main
     
     var body: some View {
-        if isUserLoggedIn {
-           tabbarView()
-        } else {
-            welcomeView()
+        ZStack {
+            if isUserLoggedIn {
+               tabbarView()
+            } else {
+                welcomeView()
+            }
         }
     }
 }
