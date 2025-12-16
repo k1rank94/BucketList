@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct AppView: View {
-    @State var appState: AppState = AppState()
     @Environment(AuthManager.self) private var authManager
     @Environment(UserManager.self) private var userManager
+    
+    @State var appState: AppState = AppState()
     
     var body: some View {
         
@@ -41,12 +42,12 @@ struct AppView: View {
         Task {
             if let userAuthInfo = authManager.authInfo {
                 print("Signed in with existing anonymous user", userAuthInfo.uid)
-                saveUser(with: userAuthInfo, isNewUser: true)
+                saveUser(with: userAuthInfo, isNewUser: false)
             } else {
                 do {
                     let result = try await authManager.signInAnonymously()
                     print("Anonymous user signed in successfully with uid - \(result.authInfo.uid)")
-                    saveUser(with: result.authInfo, isNewUser: false)
+                    saveUser(with: result.authInfo, isNewUser: result.isNewUser)
                 } catch {
                     print("Failed to sign in user anonymously with error - \(error)")
                 }
@@ -64,6 +65,20 @@ struct AppView: View {
 }
 
 
-#Preview {
-    AppView()
+#Preview("Logged in & Anonymous") {
+    AppView(appState: AppState(isUserLoggedIn: true))
+        .environment(AuthManager(service: MockAuthService(signedInUser: nil, delay: 0)))
+        .environment(UserManager(service: MockUserServices()))
+}
+
+#Preview("Logged in && signed with email") {
+    AppView(appState: AppState(isUserLoggedIn: true))
+        .environment(AuthManager(service: MockAuthService(signedInUser: .mock, delay: 0)))
+        .environment(UserManager(service: MockUserServices()))
+}
+
+#Preview("Logged Out") {
+    AppView(appState: AppState(isUserLoggedIn: false))
+        .environment(AuthManager(service: MockAuthService(signedInUser: nil, delay: 0)))
+        .environment(UserManager(service: MockUserServices()))
 }

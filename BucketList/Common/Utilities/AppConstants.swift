@@ -10,4 +10,8 @@ struct Constants {
     struct Images {
         static let randomImage = "https://picsum.photos/600/600"
     }
+    
+    struct FileNames {
+        static let currentUser = "current_user"
+    }
 }

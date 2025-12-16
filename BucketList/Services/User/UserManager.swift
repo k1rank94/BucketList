@@ -5,99 +5,30 @@
 //  Created by Kiran on 08/12/25.
 //
 
-import Firebase
-import FirebaseFirestore
-
-protocol UserService {
-    func saveUser(user: UserModel, isNewUser: Bool) throws
-    func streamUser(userId: String) -> AsyncThrowingStream<UserModel, Error>
-    func deleteUser(with id: String)
-    func markOnboardingCompleted(as status: Bool, for userId: String)
-}
-
-struct MockUserService: UserService {
-    func saveUser(user: UserModel, isNewUser: Bool) throws {
-        // Mock implementation does nothing
-    }
-    
-    func streamUser(userId: String) -> AsyncThrowingStream<UserModel, Error> {
-        AsyncThrowingStream { continuation in
-            // Immediately finish the stream, as this is a mock
-            continuation.finish()
-        }
-    }
-    
-    func deleteUser(with id: String) {
-        // Mock implementation does nothing
-    }
-    
-    func markOnboardingCompleted(as status: Bool, for userId: String) {
-        
-    }
-}
-
-struct FirebaseUserService : UserService {
-    
-    var collection: CollectionReference {
-        Firestore.firestore().collection("users")
-    }
-    
-    func saveUser(user: UserModel, isNewUser: Bool) throws {
-        try collection.document(user.id).setData(from: user, merge: true)
-    }
-    
-    func streamUser(userId: String) -> AsyncThrowingStream<UserModel, Error> {
-        AsyncThrowingStream { continuation in
-            _ = collection.document(userId).addSnapshotListener { snapshot, error in
-                if let error = error {
-                    continuation.finish(throwing: error)
-                    return
-                }
-                
-                guard let snapshot = snapshot, snapshot.exists else {
-                    // Handle case where document doesn't exist yet or was deleted
-                    // You might want to yield nil or a specific error depending on your logic
-                    return
-                }
-                
-                do {
-                    let user = try snapshot.data(as: UserModel.self)
-                    continuation.yield(user)
-                } catch {
-                    continuation.finish(throwing: error)
-                }
-            }
-        }
-    }
-    
-    func deleteUser(with id: String) {
-        collection.document(id).delete()
-    }
-    
-    func markOnboardingCompleted(as status: Bool, for userId: String) {
-        collection.document(userId).updateData([
-            UserModel.CodingKeys.isOnboardingCompleted.rawValue : true
-        ])
-    }
-}
+import Foundation
 
 @MainActor
 @Observable
 class UserManager {
     
-    let service: UserService
+    let remoteUserService: RemoteUserService
+    let localUserService: LocalUserService
+    
     private(set) var currentUser: UserModel?
     private var listenerTask: Task<Void, Never>?
     
-    init(service: UserService) {
-        self.service = service
-        self.currentUser = nil
+    init(service: UserServices) {
+        self.remoteUserService = service.remoteService
+        self.localUserService = service.localService
+        self.currentUser = getCurrentUser()
+        print("Fetched current user locally: \(String(describing: currentUser))")
+        print(NSHomeDirectory())
     }
     
     func saveUser(authInfo: UserAuthInfo, isNewUser: Bool) throws {
         let appVersion = isNewUser ? Utilities.appVersion : nil
         let userModel = UserModel(authInfo: authInfo, firstDownloadedVersion: appVersion)
-        try service.saveUser(user: userModel, isNewUser: isNewUser)
+        try remoteUserService.saveUser(user: userModel, isNewUser: isNewUser)
         startListening(userId: userModel.id)
     }
     
@@ -107,9 +38,10 @@ class UserManager {
         
         listenerTask = Task {
             do {
-                for try await user in service.streamUser(userId: userId) {
+                for try await user in remoteUserService.streamUser(userId: userId) {
                     self.currentUser = user
                     print("Successfully started listening to user \(String(describing: self.currentUser?.id))")
+                    saveCurrentUserLocally()
                 }
             } catch {
                 print("Error streaming user: \(error)")
@@ -123,14 +55,17 @@ class UserManager {
     }
     
     func signOutUser() throws {
-        let userId = try getCurrentUserId()
         stopListening()
         currentUser = nil
     }
     
     func deleteUser() throws {
         let userId = try getCurrentUserId()
-        service.deleteUser(with: userId)
+        remoteUserService.deleteUser(with: userId)
+    }
+    
+    func getCurrentUser() -> UserModel? {
+        localUserService.getCurrentUser()
     }
     
     func getCurrentUserId() throws -> String {
@@ -142,10 +77,23 @@ class UserManager {
     }
     
     func markOnboardingCompleted(as status: Bool, for userId: String) {
-        service.markOnboardingCompleted(as: status, for: userId)
+        remoteUserService.markOnboardingCompleted(as: status, for: userId)
+    }
+    
+    func saveCurrentUserLocally() {
+        guard let currentUser else {
+            print("No user to save locally")
+            return
+        }
+        do {
+            try localUserService.saveCurrentUserToFileManager(user: currentUser)
+        } catch {
+            print("Failed to save user to file manager with error: \(error)")
+        }
     }
     
     enum UserManagerError: LocalizedError {
         case noUserId
     }
 }
+

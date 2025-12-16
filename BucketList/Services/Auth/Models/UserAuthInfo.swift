@@ -22,3 +22,28 @@ struct UserAuthInfo {
         self.lastLoginDate = lastLoginDate
     }
 }
+
+#if DEBUG
+extension UserAuthInfo {
+    
+    static var mock: UserAuthInfo {
+        UserAuthInfo(
+            uid: "mock-user-123",
+            isAnonymous: false,
+            email: "test@example.com",
+            creationDate: Date().addingTimeInterval(-86400 * 10), // Created 10 days ago
+            lastLoginDate: Date()
+        )
+    }
+    
+    static var mockAnonymous: UserAuthInfo {
+        UserAuthInfo(
+            uid: "mock-anon-456",
+            isAnonymous: true,
+            email: nil,
+            creationDate: Date(),
+            lastLoginDate: Date()
+        )
+    }
+}
+#endif

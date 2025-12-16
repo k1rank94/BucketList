@@ -153,7 +153,18 @@ struct SettingsView: View {
     }
 }
 
-#Preview {
+#Preview("Anonymous User") {
     SettingsView()
-        .environment(AppState())
+        .environment(AppState(isUserLoggedIn: true))
+        .environment(AuthManager(service: MockAuthService(signedInUser: nil, delay: 0)))
+        .environment(UserManager(service: MockUserServices()))
 }
+
+#Preview("Logged In User") {
+    SettingsView()
+        .environment(AppState(isUserLoggedIn: true))
+        .environment(AuthManager(service: MockAuthService(signedInUser: .mock, delay: 0)))
+        .environment(UserManager(service: MockUserServices()))
+}
+
+

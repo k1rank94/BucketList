@@ -64,4 +64,6 @@ struct CreateAccountView: View {
 
 #Preview {
     CreateAccountView()
+        .environment(AuthManager(service: MockAuthService()))
+        .environment(UserManager(service: MockUserServices()))
 }

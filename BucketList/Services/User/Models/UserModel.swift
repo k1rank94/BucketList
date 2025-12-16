@@ -49,3 +49,32 @@ struct UserModel: Identifiable, Codable {
         case isOnboardingCompleted = "is_onboarding_completed"
     }
 }
+
+#if DEBUG
+extension UserModel {
+    
+    static var mock: UserModel {
+        UserModel(
+            id: "mock-user-123",
+            name: "Mock User",
+            email: "test@example.com",
+            profilePicture: nil,
+            creationDate: Date().addingTimeInterval(-86400 * 10),
+            lastSignedDate: Date(),
+            firstDownloadedVersion: "1.0.0"
+        )
+    }
+    
+    static var mockNewUser: UserModel {
+        UserModel(
+            id: "mock-new-789",
+            name: nil,
+            email: "new@example.com",
+            profilePicture: nil,
+            creationDate: Date(),
+            lastSignedDate: Date(),
+            firstDownloadedVersion: "1.2.0"
+        )
+    }
+}
+#endif
