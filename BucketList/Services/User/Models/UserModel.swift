@@ -15,6 +15,7 @@ struct UserModel: Identifiable, Codable {
     var creationDate: Date?
     var lastSignedDate: Date?
     var firstDownloadedVersion: String?
+    var isOnboardingCompleted: Bool?
     
     init(id: String, name: String? = nil, email: String? = nil, profilePicture: String? = nil, creationDate: Date?, lastSignedDate: Date? = nil, firstDownloadedVersion: String?) {
         self.id = id
@@ -24,14 +25,17 @@ struct UserModel: Identifiable, Codable {
         self.creationDate = creationDate
         self.lastSignedDate = lastSignedDate
         self.firstDownloadedVersion = firstDownloadedVersion
+        self.isOnboardingCompleted = nil
     }
     
     init(authInfo: UserAuthInfo, firstDownloadedVersion: String?) {
-        self.id = authInfo.uid
-        self.email = authInfo.email
-        self.creationDate = authInfo.creationDate
-        self.lastSignedDate = authInfo.lastLoginDate
-        self.firstDownloadedVersion = firstDownloadedVersion
+        self.init(
+            id: authInfo.uid,
+            email: authInfo.email,
+            creationDate: authInfo.creationDate,
+            lastSignedDate: authInfo.lastLoginDate,
+            firstDownloadedVersion: firstDownloadedVersion
+        )
     }
     
     enum CodingKeys: String, CodingKey {
@@ -42,5 +46,6 @@ struct UserModel: Identifiable, Codable {
         case creationDate = "creation_date"
         case lastSignedDate = "last_signed_date"
         case firstDownloadedVersion = "first_downloaded_version"
+        case isOnboardingCompleted = "is_onboarding_completed"
     }
 }

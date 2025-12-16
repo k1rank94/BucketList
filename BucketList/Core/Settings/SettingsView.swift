@@ -12,6 +12,7 @@ struct SettingsView: View {
     // MARK: - Dependencies
     @Environment(AppState.self) var appState
     @Environment(AuthManager.self) private var authManager
+    @Environment(UserManager.self) private var userManager
     @Environment(\.dismiss) private var dismiss
     
     // MARK: - State
@@ -117,6 +118,7 @@ struct SettingsView: View {
         Task {
             do {
                 try await authManager.signOut()
+                try userManager.signOutUser()
                 changeAppState()
             } catch {
                 print("Logout Error: \(error.localizedDescription)")
@@ -128,6 +130,7 @@ struct SettingsView: View {
         Task {
             do {
                 try await authManager.deleteUser()
+                try userManager.deleteUser()
                 changeAppState()
             } catch {
                 print("Delete Account Error: \(error.localizedDescription)")

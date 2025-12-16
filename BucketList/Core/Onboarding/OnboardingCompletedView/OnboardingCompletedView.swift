@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-struct OnboardingIntroView: View {
+struct OnboardingCompletedView: View {
+    @Environment(UserManager.self) private var userManager
     @Environment(AppState.self) var appState
     var body: some View {
         VStack() {
@@ -66,11 +67,16 @@ struct OnboardingIntroView: View {
     }
     
     private func onGetStartedButtonTapped() {
+        do {
+            try userManager.markOnboardingCompleted(as: true, for: userManager.getCurrentUserId())
+        } catch {
+            print("Failed to update mark markOnboardingCompleted with \(error)")
+        }
         appState.updateLoginStatus(true)
     }
 }
 
 #Preview {
-    OnboardingIntroView()
+    OnboardingCompletedView()
         .environment(AppState())
 }

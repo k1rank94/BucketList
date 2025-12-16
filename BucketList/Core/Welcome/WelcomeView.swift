@@ -86,7 +86,7 @@ struct WelcomeView: View {
     
     private var getStartedButton: some View {
         NavigationLink {
-            OnboardingIntroView()
+            OnboardingCompletedView()
         } label: {
             Text("Get Started")
                 .commonButtonStyle()
