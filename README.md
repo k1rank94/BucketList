@@ -9,6 +9,8 @@
 BucketList is a modern iOS application built entirely with SwiftUI that helps users discover, track, and achieve their life goals. 
 
 The app features a seamless, frictionless onboarding experience driven by automatic anonymous authentication. This allows users to dive straight into the app's core features immediately, with the option to securely upgrade and link their account later using Sign in with Apple. 
+![Onboarding](https://github.com/user-attachments/assets/9c929112-4afb-4e84-a00a-fdd8cf7e137e)
+![MainTab](https://github.com/user-attachments/assets/39da48f7-52a5-4b35-a902-02fb01d65cfb)
 
 ## 📋 Table of Contents
 * [Features](#-features)
